@@ -29,6 +29,7 @@ const Weather = ({country}) =>{
 
     return(
         <div>
+            <h1>The api key doesnt work...</h1>
 
 
 
