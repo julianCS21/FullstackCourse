@@ -4,11 +4,37 @@ import FormPerson from './components/FormPerson'
 import Persons from './components/Persons'
 import personService from './services/phones'
 
+
+const Message = ({message,color}) =>{
+
+  const styleMessage = {
+    color: color, 
+    background: 'lightgrey',
+    fontSize: '20px',
+    borderStyle: 'solid',
+    borderRadius: '5px',
+    padding: '10px',
+    marginBottom: '10px'
+
+  }
+  if(message === null){
+    return null
+  }
+  return(
+    <div style={styleMessage}>
+      <h1>{message}</h1>
+    </div>
+  )
+
+}
+
 const App = () => {
   const [ persons, setPersons ] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber] = useState('')
   const [filterName,setFilterName] = useState('')
+  const [message,setMessage] = useState(null)
+  const [color,setColor] = useState('white')
 
   const addPerson = (event) =>{
     event.preventDefault()
@@ -32,6 +58,14 @@ const App = () => {
         .then(returnedPerson =>{
           newPersons.push(returnedPerson)
           setPersons(newPersons)
+          setMessage('Added ' + person.name)
+          setColor('green')
+          setTimeout(() => {
+            setMessage(null)
+            setColor('white')
+            
+          }, 5000);
+
 
         })
       
@@ -45,6 +79,25 @@ const App = () => {
           .updatePerson(index,person)
           .then(returnedPerson =>{
             setPersons(persons.map(element => element.name.toLowerCase() === person.name.toLowerCase() ? returnedPerson : element))
+            setMessage('Updated ' + person.name)
+            setColor('green')
+            setTimeout(() => {
+              setMessage(null)
+              setColor('white')
+              
+            }, 5000);
+
+          })
+          .catch(error =>{
+            setMessage('Information of ' + person.name + ' has already been removed from server')
+            setColor('red')
+            setTimeout(() => {
+              setMessage(null)
+              setColor('white')
+              
+            }, 5000);
+            
+
           })
 
       }
@@ -119,6 +172,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Message message={message} color={color}></Message>
       <Filter value={filterName} process={filter}></Filter>
       <FormPerson name={newName} phone={newNumber} process={addPerson} nameProcess={addName} phoneProcess={addPhone}></FormPerson>
       <h2>Numbers</h2>
