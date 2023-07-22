@@ -146,7 +146,6 @@ const App = () => {
   },[])
 
   const deletePerson = (id,name) =>{
-    console.log(id)
     let confirm = window.confirm("delete " + name + " ?")
     if(confirm){
       personService
