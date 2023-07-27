@@ -65,9 +65,19 @@ const App = () => {
             setColor('white')
             
           }, 5000);
-
-
         })
+        .catch(error => {
+          setMessage(error.message)
+          setColor('red');
+          setTimeout(() => {
+            setMessage(null);
+            setColor('white');
+          }, 5000);
+        })
+        
+
+
+        
       
     }
     else{
@@ -89,7 +99,7 @@ const App = () => {
 
           })
           .catch(error =>{
-            setMessage('Information of ' + person.name + ' has already been removed from server')
+            setMessage(error.message)
             setColor('red')
             setTimeout(() => {
               setMessage(null)
@@ -152,6 +162,7 @@ const App = () => {
         .deletePerson(id)
         .then(response =>{
           const newPersonsInList = persons.filter((item) => item.id !== id)
+          console.log(newPersonsInList)
           setPersons(newPersonsInList)
           alert(name + " has been deleted")
         })

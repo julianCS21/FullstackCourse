@@ -11,7 +11,7 @@ const getAll = () =>{
 
 const addPerson = (person) =>{
     const request = axios.post(backUrl,person)
-    return request.then(response => response.data)
+    return request.then(response => response.data).catch(error => {throw new Error(error.response.data.error)})
 }
 
 const deletePerson = (id) =>{
@@ -21,7 +21,8 @@ const deletePerson = (id) =>{
 
 const updatePerson = (id,newObject) =>{
     const request = axios.put(`${backUrl}/${id}`,newObject)
-    return request.then(response => response.data)
+    return request.then(response => response.data).catch(error => {throw new Error(error.response.data.error)})
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {getAll,addPerson,deletePerson,updatePerson}
