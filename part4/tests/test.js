@@ -1,4 +1,5 @@
 const listHelper = require('../utils/list_helper')
+const mongoose = require('mongoose')
 
 test('dummy returns one', () => {
   const blogs = []
