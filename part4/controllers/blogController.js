@@ -2,15 +2,31 @@ const blogRouter = require('express').Router()
 
 const Blog = require('../models/blog')
 
+const jwt = require('jsonwebtoken')
+
+const User = require('../models/user')
+
+
+
+
 
 blogRouter.get('/',  async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('user')
   response.status(200).json(blogs)
     
 })
   
 blogRouter.post('/',  async (request, response) => {
-    const blog = new Blog(request.body)
+
+    const body = request.body
+    const user = request.user
+    const blog = new Blog({
+      title : body.title,
+      author : body.author,
+      url : body.url,
+      likes : body.likes,
+      user : user._id
+    })
 
     if(blog.likes === undefined){
       blog.likes = 0
@@ -21,6 +37,8 @@ blogRouter.post('/',  async (request, response) => {
     }
     else{
       const newBlog = await blog.save()
+      user.blogs.concat(newBlog._id)
+      await user.save()
       response.status(201).json(newBlog)
 
     }
@@ -28,17 +46,24 @@ blogRouter.post('/',  async (request, response) => {
     
   })
 
-blogRouter.delete('/:id', async (req,res) =>{
-  try{
-    await Blog.findOneAndDelete({id:(req.params.id)})
-    res.status(204).json({meesage : 'this person has been eliminated'})
-
-  }catch{
-    res.status(400).json({message : 'this resource doesnt exist'})
-
-
-  }
-})
+  blogRouter.delete('/:id', async (req, res) => {
+    try {
+        const user = req.user
+        const blogEliminate = await Blog.findById(req.params.id);
+        if (blogEliminate.user.toString() === user._id.toString()) {
+            try {
+                await Blog.findOneAndDelete({ _id: req.params.id }); 
+                return res.status(204).json({ message: 'this blog has been eliminated' });
+            } catch (error) {
+                return res.status(404).json({ message: 'this resource doesnt exist' });
+            }
+        } else {
+            return res.status(401).json({ message: 'you dont have permission for this action' });
+        }
+    } catch (error) {
+        return res.status(401).json({ error: 'token missing or invalid' });
+    }
+});
 
 const updateOptions = { runValidators: true };
 

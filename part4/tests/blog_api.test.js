@@ -63,14 +63,18 @@ describe('create a blog ', ()=>{
       url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
       likes: 13
     }
+
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1bGlhbmNzMjEiLCJpZCI6IjY0ZDNkNzU0ZjBmYWZhZGI1MzMxNTFkYyIsImlhdCI6MTY5MTY4MzE0NH0.3E1Tthqr1PLbTCpzk-x7HarCKEDHCefmM7gSbRvsWuc'
   
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`) 
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
   
-    const response = await api.get('/api/blogs')
+    const response = await api.get('/api/blogs').set('Authorization', `Bearer ${token}`) 
+
   
     const authors = response.body.map(r => r.author)
     
@@ -94,14 +98,18 @@ describe('create a new blog whitout likes',() =>{
       author: 'Teofilo Gutierrez',
       url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html'
     }
+
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1bGlhbmNzMjEiLCJpZCI6IjY0ZDNkNzU0ZjBmYWZhZGI1MzMxNTFkYyIsImlhdCI6MTY5MTY4MzE0NH0.3E1Tthqr1PLbTCpzk-x7HarCKEDHCefmM7gSbRvsWuc'
+
   
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`) 
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
   
-    const response = await api.get('/api/blogs')
+    const response = await api.get('/api/blogs').set('Authorization', `Bearer ${token}`)
   
     const likes = response.body.map(r => r.likes)
     
