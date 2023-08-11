@@ -7,7 +7,13 @@ const User = require('../models/user')
 const Blog = require('../models/blog')
 
 
+userController.get('/:username', async (req,res) =>{
+    const username = req.params.username
+    const user = await User.findOne({username : username}).populate('blogs')
+    return res.status(200).json(user)
 
+
+})
 
 
 userController.post('/', async (req,res) =>{

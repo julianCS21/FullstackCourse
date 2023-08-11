@@ -5,6 +5,7 @@ const Blog = require('../models/blog')
 const jwt = require('jsonwebtoken')
 
 const User = require('../models/user')
+const { userExtractor } = require('../utils/middleware')
 
 
 
@@ -16,7 +17,7 @@ blogRouter.get('/',  async (request, response) => {
     
 })
   
-blogRouter.post('/',  async (request, response) => {
+blogRouter.post('/',userExtractor,  async (request, response) => {
 
     const body = request.body
     const user = request.user
@@ -24,20 +25,16 @@ blogRouter.post('/',  async (request, response) => {
       title : body.title,
       author : body.author,
       url : body.url,
-      likes : body.likes,
+      likes : body.likes || 0,
       user : user._id
     })
 
-    if(blog.likes === undefined){
-      blog.likes = 0
-    }
-
     if(blog.title === undefined && blog.url === undefined){
-      response.status(400).json({error : 'miising content'})
+      response.status(400).json({error : 'missing content'})
     }
     else{
       const newBlog = await blog.save()
-      user.blogs.concat(newBlog._id)
+      user.blogs = user.blogs.concat(newBlog._id)
       await user.save()
       response.status(201).json(newBlog)
 
@@ -46,7 +43,7 @@ blogRouter.post('/',  async (request, response) => {
     
   })
 
-  blogRouter.delete('/:id', async (req, res) => {
+  blogRouter.delete('/:id',userExtractor, async (req, res) => {
     try {
         const user = req.user
         const blogEliminate = await Blog.findById(req.params.id);
