@@ -16,6 +16,9 @@ blogRouter.get('/',  async (request, response) => {
   response.status(200).json(blogs)
     
 })
+
+
+
   
 blogRouter.post('/',userExtractor,  async (request, response) => {
 
@@ -66,8 +69,8 @@ const updateOptions = { runValidators: true };
 
 blogRouter.put('/:id', async (req,res) =>{
   try{
-    await Blog.findOneAndUpdate({id:(req.params.id)},req.body,{ new: true, ...updateOptions })
-    res.status(202).json()
+    await Blog.findOneAndUpdate({_id:(req.params.id)},req.body,{ new: true, ...updateOptions })
+    res.status(202).json(req.body)
 
   }catch{
     res.status(404).json({message :'this resouerce doesnt exist'})

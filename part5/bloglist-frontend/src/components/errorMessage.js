@@ -1,4 +1,4 @@
-const errorMessage = ({message,color}) =>{
+const ErrorMessage = ({message,color}) =>{
     const styleMessage = {
         color: color, 
         background: 'lightgrey',
@@ -23,4 +23,4 @@ const errorMessage = ({message,color}) =>{
 
 }
 
-export default errorMessage
+export default ErrorMessage
